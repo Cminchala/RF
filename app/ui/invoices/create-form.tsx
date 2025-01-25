@@ -10,10 +10,10 @@ import {
 import { Button } from '@/app/ui/button';
 import { createInvoice, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
+import { user } from '@/app/lib/definitions-t'
+ 
 
-
-
-export default function Form({ customers }: { customers: CustomerField[] }) {
+export default function Form({ usersf }: { usersf: user[] }) {
 
   const initialState: State ={message: null, errors: {}}
   const [state,formAction] = useActionState(createInvoice,initialState);
@@ -27,8 +27,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           </label>
           <div className="relative">
             <select
-              id="customer"
-              name="customerId"
+              id="user"
+              name="user_id"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
               aria-describedby="customer-error"
@@ -36,9 +36,9 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               <option value="" disabled>
                 Select a customer
               </option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.name}
+              {usersf.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
                 </option>
               ))}
             </select>

@@ -41,4 +41,10 @@ async function getUser(email: string): Promise<User | undefined> {
         },
       }),
     ],
+    callbacks: {
+      async session({ session, token, user }) {
+        session.user = user;
+        return session;
+      },
+    },
   });
