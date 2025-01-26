@@ -1,6 +1,7 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+"use client";import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
   import {deleteInvoice} from '@/app/lib/actions';
+  import { deleteReferral } from '@/app/lib/actions-m';
 export function CreateInvoice() {
   return (
     <Link
@@ -29,6 +30,27 @@ export function DeleteInvoice({ id }: { id: string }) {
  
   return (
     <form action={deleteInvoiceWithId}>
+      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Delete</span>
+        <TrashIcon className="w-4" />
+      </button>
+    </form>
+  );
+}
+
+
+export function DeleteReferral({ id }: { id: string }) {
+  const deleteReferralWithId = deleteReferral.bind(null, id);
+ 
+  return (
+    <form
+      onSubmit={(e) => {
+        if (!confirm('Are you sure you want to delete this referral?')) {
+          e.preventDefault();
+        }
+      }}
+      action={deleteReferralWithId}
+    >
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />

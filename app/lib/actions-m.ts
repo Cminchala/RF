@@ -65,7 +65,7 @@ console.log(validatedFields);
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 
-  return { message: null, errors: {} };
+  return { message: null, errors: {} };  // delete this line
 }
 
 const UpdateReferralSchema = ReferralSchema.extend({
@@ -81,6 +81,7 @@ export async function updateReferral(formData: FormData) {
     amount: formData.get('amount'),
     amount_paid: formData.get('amount_paid'),
     status: formData.get('status'),
+    date: new Date().toISOString(), 
   });
 
   if (!validatedFields.success) {
