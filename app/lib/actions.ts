@@ -80,6 +80,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
         redirect('/dashboard/invoices');
     }
 
+
+    // Update Invoice
     const UpdateInvoice = FormSchema.omit({ id: true, date: true });
     const client = await db.connect();
     export async function updateInvoice(id: string, formData: FormData) {

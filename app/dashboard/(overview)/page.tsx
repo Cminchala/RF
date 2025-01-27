@@ -1,15 +1,17 @@
 
 
 import { lusitana } from '@/app/ui/fonts';
-import { getSession } from 'next-auth/react';
 
+import {auth} from '@/auth';
+
+console.log(auth);
 export default async function Page() {
   // const session = await getSession();
 
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        {/* {session ? `Welcome, ${session.user.name}` : 'Welcome'} */}
+        
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
    

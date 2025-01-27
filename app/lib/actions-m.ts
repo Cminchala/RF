@@ -1,8 +1,10 @@
 'use server'
 import { sql } from '@vercel/postgres';
+import { get } from 'http';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { getSession } from 'next-auth/react';
 
 const ReferralSchema = z.object({
   cardetail: z.string(),
@@ -23,6 +25,7 @@ export type State = {
     amount?: string[];
     amount_paid?: string[];
     status?: string[];
+    date?: string[];
   };
   message?: string | null;
 };
@@ -47,12 +50,14 @@ export async function createReferral(prevState: State, formData: FormData): Prom
     };
   }
 console.log(validatedFields);
-  const { cardetail, carvin, name, amount, amount_paid, status } = validatedFields.data;
+  const { cardetail, carvin, name, amount, amount_paid, status, date } = validatedFields.data;
+  const amountinCents = amount * 100;
+  const amount_paidinCents = amount_paid * 100;
 
   try {
     await sql`
       INSERT INTO referralData (carDetail, carVin, user_id ,name, Amount, Amount_paid, status , Date)
-      VALUES (${cardetail}, ${carvin}, ${'410544b2-4001-4271-9855-fec4b6a6442a'}, ${name}, ${amount}, ${amount_paid}, ${status} , ${new Date().toISOString()})
+      VALUES (${cardetail}, ${carvin}, ${'410544b2-4001-4271-9855-fec4b6a6442a'}, ${name}, ${amountinCents}, ${amount_paidinCents}, ${status} , ${date})
     `;
   } catch (error) {
     console.error(error);
@@ -65,14 +70,14 @@ console.log(validatedFields);
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 
-  return { message: null, errors: {} };  // delete this line
+  return { message: null, errors: {} };
 }
 
 const UpdateReferralSchema = ReferralSchema.extend({
   id: z.string(),
 });
 
-export async function updateReferral(formData: FormData) {
+export async function updateReferral(formData: FormData): Promise<any> {
   const validatedFields = UpdateReferralSchema.safeParse({
     id: formData.get('id'),
     cardetail: formData.get('cardetail'),
@@ -81,7 +86,7 @@ export async function updateReferral(formData: FormData) {
     amount: formData.get('amount'),
     amount_paid: formData.get('amount_paid'),
     status: formData.get('status'),
-    date: new Date().toISOString(), 
+    date: new Date().toISOString(),
   });
 
   if (!validatedFields.success) {
@@ -91,7 +96,9 @@ export async function updateReferral(formData: FormData) {
     };
   }
 
-  const { id, cardetail, carvin, name, amount, amount_paid, status } = validatedFields.data;
+  const { id, cardetail, carvin, name, amount, amount_paid, status, date } = validatedFields.data;
+  const amountinCents = amount * 100;
+  const amount_paidinCents = amount_paid * 100;
 
   try {
     await sql`
@@ -99,9 +106,10 @@ export async function updateReferral(formData: FormData) {
       SET carDetail = ${cardetail},
           carVin = ${carvin},
           name = ${name},
-          Amount = ${amount},
-          Amount_paid = ${amount_paid},
-          status = ${status}
+          Amount = ${amountinCents},
+          Amount_paid = ${amount_paidinCents},
+          status = ${status},
+          Date = ${date}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -127,3 +135,4 @@ export async function deleteReferral(id: string) {
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
+
