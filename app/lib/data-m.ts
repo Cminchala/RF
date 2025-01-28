@@ -137,3 +137,16 @@ export async function fetchUserByEmailAndPassword(email: string, password: strin
     throw new Error('Failed to fetch user by email and password.');
   }
 }
+
+// amount_paid group by user_id 
+
+export async function fetchUserAmountPaid() {
+  try {
+    const userAmountPaid = await sql`SELECT user_id, SUM(Amount_paid) as Amount_paid FROM referralData GROUP BY user_id`;
+
+    return userAmountPaid.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user amount paid.');
+  }
+}

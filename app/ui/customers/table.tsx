@@ -4,7 +4,7 @@ import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredreferrals } from '@/app/lib/data-m';
 
-export default async function CTable({
+export default async function Table({
   query,
   currentPage,
 }: {
@@ -31,20 +31,19 @@ export default async function CTable({
                    
                       <p>{referral.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{referral.cardetail}</p>
+                    <p className="text-sm text-gray-500">Amount Due: {referral.amount_paid}</p>
                   </div>
-                  <InvoiceStatus status={referral.status} />
+                  
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(referral.amount)}
+                       Amount Paid in 30 Days: {formatCurrency(referral.amount)}
                     </p>
-                    { <p>{formatDateToLocal(referral.date)}</p> } 
+                    
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={referral.id} />
-                    <DeleteInvoice id={referral.id} />
+                    
                   </div>
                 </div>
               </div>
@@ -54,25 +53,13 @@ export default async function CTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Car Detail
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Car VIN
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
                   Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Amount due
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Amount Paid
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -87,14 +74,8 @@ export default async function CTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{referral.cardetail}</p>
+                      <p>{referral.name}</p>
                     </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {referral.carvin}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {referral.name}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(referral.amount)}
@@ -102,16 +83,9 @@ export default async function CTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(referral.amount_paid)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(referral.date)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={referral.status} />
-                  </td>        
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                   <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={referral.id} />
-                      <DeleteReferral id={referral.id} />
+                      
                     </div>
                     </td>
                 </tr>
