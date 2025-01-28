@@ -15,7 +15,7 @@ export async function fetchUsers( ) {
 }
 
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredreferrals(
   query: string,
