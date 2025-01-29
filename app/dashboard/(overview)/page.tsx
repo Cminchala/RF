@@ -2,11 +2,7 @@
 
 import { lusitana } from '@/app/ui/fonts';
 
-import {auth} from '@/auth';
-
-console.log(auth);
 export default async function Page() {
-  // const session = await getSession();
 
   return (
     <main>

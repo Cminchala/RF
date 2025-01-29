@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateReferral } from '@/app/lib/actions-m';
+import { formatCurrency } from '@/app/lib/utils';
 
 export default function EditReferralForm({
   referral,
@@ -17,8 +18,8 @@ export default function EditReferralForm({
   referral: referralDataForm;
   users: user[];
 }) {
-  return (
-    <form action={updateReferral}>
+   const updateReferralWithId = updateReferral.bind(null, referral.id);
+  return <form action={updateReferralWithId}>{/* ... */}
       {/* Hidden ID Field */}
       <input type="hidden" name="id" value={referral.id} />
 
@@ -37,11 +38,7 @@ export default function EditReferralForm({
             aria-describedby="carDetail-error"
             required
           />
-          {/* Error Handling */}
-          {/* 
-            If using server-side validation, you might handle errors differently.
-            You can display error messages based on URL parameters or other state management.
-          */}
+       
         </div>
 
         {/* Car VIN */}
@@ -71,7 +68,7 @@ export default function EditReferralForm({
             name="amount"
             type="number"
             step="0.01"
-            defaultValue={referral.amount}
+            defaultValue={referral.amount / 100}
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             aria-describedby="amount-error"
             required
@@ -89,7 +86,7 @@ export default function EditReferralForm({
             name="amount_paid"
             type="number"
             step="0.01"
-            defaultValue={referral.amount_paid}
+            defaultValue={referral.amount_paid / 100}
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             aria-describedby="amount-paid-error"
             required
@@ -153,5 +150,5 @@ export default function EditReferralForm({
         <Button type="submit">Edit Referral</Button>
       </div>
     </form>
-  );
+  
 }

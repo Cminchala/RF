@@ -6,13 +6,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         <body>
           <header>
-          
-           
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </header>
-          {children}
+          <main>{children}</main>
         </body>
       </html>
     </ClerkProvider>
   )
 }
 
+
+   

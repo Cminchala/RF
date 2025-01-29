@@ -18,7 +18,7 @@ export default function Form({ usersf }: { usersf: user[] }) {
   const initialState: State ={message: null, errors: {}}
   const [state,formAction] = useActionState(createInvoice,initialState);
 
-  return <form action={formAction}>
+  return <form action={formAction}> 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">

@@ -55,6 +55,8 @@ export async function fetchFilteredreferrals(
   }
 }
 
+
+
 export async function fetchreferralsPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)
@@ -148,5 +150,38 @@ export async function fetchUserAmountPaid() {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch user amount paid.');
+  }
+}
+
+// Fetch total amount awarded grouped by name
+export async function fetchTotalAmountAwarded() {
+  try {
+    const totalAmountAwarded = await sql`
+      SELECT name, SUM(amount_paid) as amount_awarded
+      FROM referralData
+      GROUP BY name
+    `;
+
+    return totalAmountAwarded.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total amount awarded.');
+  }
+}
+
+// Fetch total amount awarded in the last 30 days grouped by name
+export async function fetchAmountAwardedLast30Days() {
+  try {
+    const amountAwardedLast30Days = await sql`
+      SELECT name, SUM(amount_paid) AS amount_awarded
+      FROM referralData
+      WHERE date >= NOW() - INTERVAL '30 days'
+      GROUP BY name
+    `;
+
+    return amountAwardedLast30Days.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch amount awarded in the last 30 days.');
   }
 }

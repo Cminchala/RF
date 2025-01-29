@@ -1,16 +1,21 @@
 'use server'
 import { sql } from '@vercel/postgres';
-import { get } from 'http';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { getSession } from 'next-auth/react';
+import { currentUser } from '@clerk/nextjs/server';
+
+async function getFullName() {
+  const user = await currentUser();
+  if (user) {
+    return String(user.fullName);
+  }
+  return null;
+}
 
 const ReferralSchema = z.object({
   cardetail: z.string(),
   carvin: z.string(),
-  // Fixed user name, e.g. "JohnDoe". Adjust as needed.
-  name: z.literal('JohnDoe'),
   amount: z.coerce.number().gt(0),
   amount_paid: z.coerce.number().default(0),
   status: z.enum(['pending', 'paid']),
@@ -21,7 +26,6 @@ export type State = {
   errors?: {
     cardetail?: string[];
     carvin?: string[];
-    name?: string[];
     amount?: string[];
     amount_paid?: string[];
     status?: string[];
@@ -31,33 +35,38 @@ export type State = {
 };
 
 export async function createReferral(prevState: State, formData: FormData): Promise<State> {
+  const username = await getFullName();
+  if (!username) {
+    return {
+      errors: {},
+      message: 'User not authenticated.',
+    };
+  }
+
   const validatedFields = ReferralSchema.safeParse({
     cardetail: formData.get('cardetail'),
     carvin: formData.get('carvin'),
-    name: 'JohnDoe', // Example fixed name
     amount: formData.get('amount'),
     amount_paid: formData.get('amount_paid'),
     status: formData.get('status'),
     date: new Date().toISOString(),
   });
 
-  console.log(formData)
-  
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing fields. Failed to create referral.',
     };
   }
-console.log(validatedFields);
-  const { cardetail, carvin, name, amount, amount_paid, status, date } = validatedFields.data;
+
+  const { cardetail, carvin, amount, amount_paid, status, date } = validatedFields.data;
   const amountinCents = amount * 100;
   const amount_paidinCents = amount_paid * 100;
 
   try {
     await sql`
-      INSERT INTO referralData (carDetail, carVin, user_id ,name, Amount, Amount_paid, status , Date)
-      VALUES (${cardetail}, ${carvin}, ${'410544b2-4001-4271-9855-fec4b6a6442a'}, ${name}, ${amountinCents}, ${amount_paidinCents}, ${status} , ${date})
+      INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
+      VALUES (${cardetail}, ${carvin}, ${'410544b2-4001-4271-9855-fec4b6a6442a'}, ${username}, ${amountinCents}, ${amount_paidinCents}, ${status}, ${date})
     `;
   } catch (error) {
     console.error(error);
@@ -77,26 +86,19 @@ const UpdateReferralSchema = ReferralSchema.extend({
   id: z.string(),
 });
 
-export async function updateReferral(formData: FormData): Promise<any> {
-  const validatedFields = UpdateReferralSchema.safeParse({
-    id: formData.get('id'),
+export async function updateReferral(id: string, formData: FormData): Promise<any> {
+  const validatedFields = UpdateReferralSchema.parse({
+    id,
     cardetail: formData.get('cardetail'),
     carvin: formData.get('carvin'),
-    name: 'JohnDoe',
     amount: formData.get('amount'),
     amount_paid: formData.get('amount_paid'),
     status: formData.get('status'),
     date: new Date().toISOString(),
+    
   });
 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Failed to update referral.',
-    };
-  }
-
-  const { id, cardetail, carvin, name, amount, amount_paid, status, date } = validatedFields.data;
+  const { cardetail, carvin, amount, amount_paid, status } = validatedFields;
   const amountinCents = amount * 100;
   const amount_paidinCents = amount_paid * 100;
 
@@ -105,11 +107,10 @@ export async function updateReferral(formData: FormData): Promise<any> {
       UPDATE referralData
       SET carDetail = ${cardetail},
           carVin = ${carvin},
-          name = ${name},
           Amount = ${amountinCents},
           Amount_paid = ${amount_paidinCents},
           status = ${status},
-          Date = ${date}
+          Date = ${new Date().toISOString()}
       WHERE id = ${id}
     `;
   } catch (error) {

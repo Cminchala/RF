@@ -8,10 +8,8 @@ import Image from 'next/image'
 export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">
-      <div className={styles.shape} />
-      <div
-  className="relative w-0 h-0 border-l-[15px] border-r-[15px] border-b-[26px] border-l-transparent border-r-transparent border-b-black"
-/>
+    
+      
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52"> 
          <AcmeLogo />
       </div>
@@ -25,7 +23,7 @@ export default function Page() {
             
           </p>
           <Link
-            href="/login"
+            href="/sign-in"
             className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
           >
             <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
@@ -41,7 +39,7 @@ export default function Page() {
       />
 
       <Image 
-        src="/hero-mobile.png"
+        src="/hero-website.png"
         width = {560}
         height = {620}
         className="block md:hidden"
