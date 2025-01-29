@@ -17,7 +17,7 @@ export default function Page() {
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             <strong>Welcome to Reliance Autowork refferal dashboard</strong> Main Website{' '}
-            <a href="https://relianceautoworks.com/" className="text-blue-500">
+            <a href="/relianceautoworks.com/index.html" className="text-blue-500">
               Reliance Auto work 
             </a>
             

@@ -1,0 +1,36 @@
+#toolkit-enable-cookie-pop {
+    transition:.8s;
+}
+#toolkit-enable-cookie-pop.enabled {
+    position: fixed;
+    bottom: -100%;
+    z-index: 1500;
+}
+#toolkit-enable-cookie-pop.enabled.pop {
+    bottom: 0;
+}
+#toolkit-enable-cookie-pop .tkec-body,
+#toolkit-enable-cookie-pop .tkec-acc {
+    background-color:#fff;
+    padding: 20px 30px;
+}
+#tkcookie-policy h3,
+#tkcookie-policy h4,
+#tkcookie-policy p,
+#toolkit-enable-cookie-pop .tkec-body p {
+    color:#252525;
+}
+#toolkit-enable-cookie-pop .tkec-body a {
+    color:#0D97DC;
+}
+#tkcookie-policy {
+    height:0px;
+    overflow:hidden;
+    transition:.5s;
+    background:#fff;
+}
+#tkcookie-policy.show {
+    height:300px;
+    padding:20px;
+    overflow:scroll;
+}

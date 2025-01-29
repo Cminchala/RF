@@ -1,0 +1,67 @@
+/****************************************/
+/**   Standard Gravity Forms Styling   **/
+/****************************************/
+
+/* Adds the radio circles and the checkbox boxes back in */
+form:not(.md-form) [type="radio"]:not(:checked), form:not(.md-form) [type="radio"]:checked, form:not(.md-form) [type="checkbox"]:not(:checked), form:not(.md-form) [type="checkbox"]:checked {
+	margin-top:-2px !important;
+}
+[type="radio"]:not(:checked), [type="radio"]:checked, [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+	position:relative;
+	opacity:1;
+	pointer-events:auto;
+}
+
+
+/* Adjusts radio and checkbox labels to be in line with selectors*/
+.gform_wrapper  .md-form .gfield_radio li label, .gform_wrapper .md-form  .gfield_checkbox li label {
+	min-width:75% !important;
+/*	padding:8px 0px 0px 5px !important;*/
+}
+/* gives space and lines up the "other" choice in radio items */
+.md-form .ginput_container_radio li input[value=gf_other_choice] {
+	margin-top:0 !important;
+	margin-bottom: 4px !important;
+}
+.md-form .ginput_container_radio li input:nth-of-type(2) {
+	margin:9px 0;
+}
+
+/* Make file upload fields look more presentable */
+.gform_wrapper .md-form  input[type=file] {
+	padding:12px;
+}
+
+/* Adjusts Address Field labels */
+.md-form .gfield .ginput_complex span.address_line_1 label,
+.md-form .gfield .ginput_complex span.address_line_2 label {
+	top:-5px;
+}
+.md-form .gfield .ginput_complex span.address_city label,
+.md-form .gfield .ginput_complex span.address_zip label {
+	top:12px;
+}
+.md-form .gfield .ginput_complex span.address_state select {
+	margin-top: 17px;
+}
+.md-form .gfield .ginput_complex span.address_state label {
+	top:12px;
+}
+.md-form .gfield .ginput_complex span.address_state select + label {
+	top:-13px;
+	left:12px;
+}
+.md-form .gfield .ginput_complex span.address_country select {
+	margin-top: 17px;
+}
+.md-form .gfield .ginput_complex span.address_country label {
+	top:12px;
+}
+.md-form .gfield .ginput_complex span.address_country select + label {
+	top:-13px;
+	left:12px;
+}
+/* Adjusts the position of the radio circles */
+.gform_wrapper .md-form li.gfield.gf_list_2col ul.gfield_checkbox li label, .gform_wrapper .md-form li.gfield.gf_list_2col ul.gfield_radio li label, .gform_wrapper .md-form li.gfield.gf_list_3col ul.gfield_checkbox li label, .gform_wrapper .md-form li.gfield.gf_list_3col ul.gfield_radio li label, .gform_wrapper .md-form li.gfield.gf_list_4col ul.gfield_checkbox li label, .gform_wrapper .md-form li.gfield.gf_list_4col ul.gfield_radio li label {
+	vertical-align:baseline !important;
+}
