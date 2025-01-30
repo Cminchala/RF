@@ -3,8 +3,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --turbopack",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
+    
   },
   "dependencies": {
     "@clerk/nextjs": "^6.10.3",
