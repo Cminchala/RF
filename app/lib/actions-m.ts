@@ -24,9 +24,9 @@ async function getuserID(){
 const ReferralSchema = z.object({
   cardetail: z.string(),
   carvin: z.string(),
-  amount: z.coerce.number().gt(0),
+  amount: z.coerce.number().default(0),
   amount_paid: z.coerce.number().default(0),
-  status: z.enum(['pending', 'paid']),
+  status: z.enum(['pending', 'paid']).default('pending'),
   date: z.string(),
 });
 
@@ -108,9 +108,7 @@ export async function createReferralM(prevState: State, formData: FormData): Pro
   const validatedFields = ReferralSchema.safeParse({
     cardetail: formData.get('cardetail'),
     carvin: formData.get('carvin'),
-    amount: formData.get('amount'),
-    amount_paid: formData.get('amount_paid'),
-    status: formData.get('status'),
+    status: "pending",
     date: new Date().toISOString(),
   });
 
@@ -121,9 +119,9 @@ export async function createReferralM(prevState: State, formData: FormData): Pro
     };
   }
 
-  const { cardetail, carvin, amount, amount_paid, status, date } = validatedFields.data;
-  const amountinCents = amount * 100;
-  const amount_paidinCents = amount_paid * 100;
+  const { cardetail, carvin, status, date } = validatedFields.data;
+  const amountinCents = 0;
+  const amount_paidinCents = 0;
 
   try {
     await sql`
