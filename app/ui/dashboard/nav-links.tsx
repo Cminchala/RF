@@ -8,6 +8,7 @@ import {
 import Link from 'next/link';
 import {usePathname} from 'next/navigation'
 import clsx from 'clsx';
+import { Protect } from '@clerk/nextjs';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -17,9 +18,20 @@ const links = [
     name: 'Invoices',
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
+    protected: true, // Mark as protected
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-  {name: 'TEST', href: '/dashboard/test', icon: UserGroupIcon},
+  {
+    name: 'Customers',
+    href: '/dashboard/customers',
+    icon: UserGroupIcon,
+    protected: true, // Mark as protected
+  },
+  {
+    name: 'TEST',
+    href: '/dashboard/test',
+    icon: UserGroupIcon,
+    protected: true, // Mark as protected
+  },
 ];
 
 export default function NavLinks() {
@@ -28,7 +40,7 @@ export default function NavLinks() {
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
-        return (
+        const linkElement = (
           <Link
             key={link.name}
             href={link.href}
@@ -42,6 +54,12 @@ export default function NavLinks() {
             <LinkIcon className="w-6" />
             <p className="hidden md:block">{link.name}</p>
           </Link>
+        );
+
+        return link.protected ? (
+          <Protect role='org:admin' key={link.name}>{linkElement}</Protect>
+        ) : (
+          linkElement
         );
       })}
     </>
