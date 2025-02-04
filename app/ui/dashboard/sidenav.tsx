@@ -15,7 +15,7 @@ export default function SideNav() {
         <div className="flex w-full justify-between items-center text-white md:w-40">
           <AcmeLogo />
           <SignedIn>
-            <UserButton />
+            <UserButton afterSignOutUrl='/sign-in' />
           </SignedIn>
         </div>
       </Link>

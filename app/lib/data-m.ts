@@ -1,7 +1,7 @@
 import {sql} from '@vercel/postgres';
 import{user, referralData} from './definitions-t';
 import { formatCurrency } from './utils';
-
+import { currentUser } from '@clerk/nextjs/server';
 
 export async function fetchUsers( ) {
   try {
@@ -14,6 +14,22 @@ export async function fetchUsers( ) {
   }
 }
 
+
+async function getuserID(){
+  const user = await currentUser();
+  if (user) {
+    return String(user.id);
+  }
+  return null;
+}
+
+async function getFullName() {
+  const user = await currentUser();
+  if (user) {
+    return String(user.fullName);
+  }
+  return null;
+}
 
 const ITEMS_PER_PAGE = 6;
 
@@ -55,6 +71,45 @@ export async function fetchFilteredreferrals(
   }
 }
 
+// filter by userID from clerk 
+export async function fetchFilteredreferralsMembers(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const user_id = await getuserID();
+
+  try {
+    const referrals = await sql<referralData>`
+      SELECT
+        referralData.id,
+        referralData.carDetail,
+        referralData.carVin,
+        referralData.name,
+        referralData.user_id,
+        referralData.Amount,
+        referralData.Amount_paid,
+        referralData.Date,
+        referralData.status
+      FROM referralData
+      WHERE (
+        referralData.carDetail ILIKE ${`%${query}%`}
+        OR referralData.carVin ILIKE ${`%${query}%`}
+        OR referralData.name ILIKE ${`%${query}%`}
+        OR referralData.Amount::text ILIKE ${`%${query}%`}
+        OR referralData.Date::text ILIKE ${`%${query}%`}
+        OR referralData.status ILIKE ${`%${query}%`}
+      )
+      AND referralData.user_id = ${user_id}
+      ORDER BY referralData.Date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+    return referrals.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch referrals.');
+  }
+}
 
 
 export async function fetchreferralsPages(query: string) {

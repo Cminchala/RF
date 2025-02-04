@@ -13,6 +13,14 @@ async function getFullName() {
   return null;
 }
 
+async function getuserID(){
+  const user = await currentUser();
+  if (user) {
+    return String(user.id);
+  }
+  return null;
+}
+
 const ReferralSchema = z.object({
   cardetail: z.string(),
   carvin: z.string(),
@@ -36,12 +44,15 @@ export type State = {
 
 export async function createReferral(prevState: State, formData: FormData): Promise<State> {
   const username = await getFullName();
-  if (!username) {
+  const id = await getuserID();
+
+  if (!username && !id) {
     return {
       errors: {},
       message: 'User not authenticated.',
     };
   }
+
 
   const validatedFields = ReferralSchema.safeParse({
     cardetail: formData.get('cardetail'),
@@ -66,7 +77,7 @@ export async function createReferral(prevState: State, formData: FormData): Prom
   try {
     await sql`
       INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
-      VALUES (${cardetail}, ${carvin}, ${'410544b2-4001-4271-9855-fec4b6a6442a'}, ${username}, ${amountinCents}, ${amount_paidinCents}, ${status}, ${date})
+      VALUES (${cardetail}, ${carvin}, ${id}, ${username}, ${amountinCents}, ${amount_paidinCents}, ${status}, ${date})
     `;
   } catch (error) {
     console.error(error);
@@ -82,9 +93,65 @@ export async function createReferral(prevState: State, formData: FormData): Prom
   return { message: null, errors: {} };
 }
 
+export async function createReferralM(prevState: State, formData: FormData): Promise<State> {
+  const username = await getFullName();
+  const id = await getuserID();
+
+  if (!username && !id) {
+    return {
+      errors: {},
+      message: 'User not authenticated.',
+    };
+  }
+
+
+  const validatedFields = ReferralSchema.safeParse({
+    cardetail: formData.get('cardetail'),
+    carvin: formData.get('carvin'),
+    amount: formData.get('amount'),
+    amount_paid: formData.get('amount_paid'),
+    status: formData.get('status'),
+    date: new Date().toISOString(),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create referral.',
+    };
+  }
+
+  const { cardetail, carvin, amount, amount_paid, status, date } = validatedFields.data;
+  const amountinCents = amount * 100;
+  const amount_paidinCents = amount_paid * 100;
+
+  try {
+    await sql`
+      INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
+      VALUES (${cardetail}, ${carvin}, ${id}, ${username}, ${amountinCents}, ${amount_paidinCents}, ${status}, ${date})
+    `;
+  } catch (error) {
+    console.error(error);
+    return {
+      errors: {},
+      message: 'Failed to create referral.',
+    };
+  }
+
+  revalidatePath('/dashboard');
+  redirect('/dashboard');
+
+  return { message: null, errors: {} };
+}
+
+
+
+
+
 const UpdateReferralSchema = ReferralSchema.extend({
   id: z.string(),
 });
+
 
 export async function updateReferral(id: string, formData: FormData): Promise<any> {
   const validatedFields = UpdateReferralSchema.parse({
@@ -135,5 +202,20 @@ export async function deleteReferral(id: string) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
+}
+
+export async function deleteReferralM(id: string) {
+  try {
+    await sql`
+      DELETE FROM referralData
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to delete referral.');
+  }
+
+  revalidatePath('/dashboard');
+  redirect('/dashboard');
 }
 

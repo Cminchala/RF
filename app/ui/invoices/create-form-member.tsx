@@ -2,14 +2,14 @@
 import Link from 'next/link';
 import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createReferral, State } from '@/app/lib/actions-m';
+import { createReferralM, State } from '@/app/lib/actions-m';
 import { useActionState } from 'react';
 import { user } from '@/app/lib/definitions-t';
 
 
 export default function Form({ usersf }: { usersf: user[] }) {
   const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createReferral, initialState);
+  const [state, formAction] = useActionState(createReferralM, initialState);
 
   return (
     <form action={formAction}> {/* <-- Add method="post" */}
@@ -142,7 +142,7 @@ export default function Form({ usersf }: { usersf: user[] }) {
       {/* Actions */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/dashboard"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600"
         >
           Cancel
