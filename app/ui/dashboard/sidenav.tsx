@@ -30,7 +30,7 @@ export default function SideNav() {
             
           </SignedIn>
           <SignedOut>
-            <RedirectToSignIn />
+            <RedirectToSignIn signInFallbackRedirectUrl='/dashboard'/>
           </SignedOut>
           </div>
         </form>
