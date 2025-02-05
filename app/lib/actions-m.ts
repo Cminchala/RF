@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { currentUser } from '@clerk/nextjs/server';
 
+
+
 async function getFullName() {
   const user = await currentUser();
   if (user) {
