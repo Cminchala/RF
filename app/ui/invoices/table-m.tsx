@@ -31,7 +31,8 @@ export default async function ReferralsTable({
                    
                       <p>{referral.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{referral.cardetail}</p>
+                    <p className="text-sm text-blue-500">{referral.cardetail}</p>
+                    <p className="text-sm text-black-500">Car Vin: {referral.carvin}</p>
                     <p className="text-sm text-green-500">Amount awarded: {formatCurrency(referral.amount_paid)}</p>
                   </div>
                   <InvoiceStatus status={referral.status} />

@@ -32,6 +32,7 @@ export default async function ReferralsTable({
                       <p>{referral.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">{referral.cardetail}</p>
+                    <p className="text-sm text-gray-500">Car Vin: {referral.carvin}</p>
                     <p className="text-sm text-green-500">Amount awarded: {formatCurrency(referral.amount_paid)}</p>
                   </div>
                   <InvoiceStatus status={referral.status} />
@@ -39,7 +40,7 @@ export default async function ReferralsTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      Amount: {formatCurrency(referral.amount)}
+                      Amount : {formatCurrency(referral.amount)}
                     </p>
                     { <p>{formatDateToLocal(referral.date)}</p> } 
                   </div>

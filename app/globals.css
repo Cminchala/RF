@@ -1,0 +1,8 @@
+/* Hide org switcher action button */
+organizationSwitcherPopoverActionButton,
+organizationSwitcherPopoverActionButton__createOrganization,
+button,
+button__createOrganization,
+internal-xbgrhv {
+  display: none !important;
+}

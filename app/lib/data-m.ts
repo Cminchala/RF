@@ -132,6 +132,29 @@ export async function fetchreferralsPages(query: string) {
   }
 }
 
+export async function fetchreferralsPagesMembers(query: string) {
+  const user_id = await getuserID();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM referralData
+    WHERE
+      (carDetail ILIKE ${`%${query}%`}
+      OR carVin ILIKE ${`%${query}%`}
+      OR name ILIKE ${`%${query}%`}
+      OR Amount::text ILIKE ${`%${query}%`}
+      OR Date::text ILIKE ${`%${query}%`}
+      OR status ILIKE ${`%${query}%`})
+      AND user_id = ${user_id}
+  `;
+
+    return Math.ceil(count.rows[0].count / ITEMS_PER_PAGE);
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch referrals pages.');
+  }
+}
+
 export async function fetchreferralById(id: string) {
   try {
     const referral = await sql<referralData>`
