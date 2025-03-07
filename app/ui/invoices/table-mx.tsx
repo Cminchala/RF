@@ -46,7 +46,7 @@ export default async function ReferralsTable({
                     { <p>{formatDateToLocal(referral.date)}</p> } 
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={referral.id} />
+      
                     <DeleteReferralM id={referral.id} />
                   </div>
                 </div>
