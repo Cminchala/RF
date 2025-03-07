@@ -3,6 +3,7 @@ import {
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
+  CurrencyDollarIcon,
 } from '@heroicons/react/24/outline';
 
 import Link from 'next/link';
@@ -27,9 +28,9 @@ const links = [
     protected: true, // Mark as protected
   },
   {
-    name: 'TEST',
-    href: '/dashboard/test',
-    icon: UserGroupIcon,
+    name: 'Earnings',
+    href: '/dashboard/earnings',
+    icon: CurrencyDollarIcon,
     protected: true, // Mark as protected
   },
 ];

@@ -263,3 +263,44 @@ export async function fetchAmountAwardedLast30Days() {
     throw new Error('Failed to fetch amount awarded in the last 30 days.');
   }
 }
+
+
+export async function monthlyEarnings(){
+  try{
+    const monthlyEarnings = await sql`
+    SELECT 
+    EXTRACT(MONTH FROM date) as month,
+    SUM(amount)/100 as earnings
+    FROM referralData
+    WHERE EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM NOW())
+    GROUP BY EXTRACT(MONTH FROM date)
+    ORDER BY EXTRACT(MONTH FROM date)
+    `;
+
+    return monthlyEarnings.rows;
+  }
+  catch(error){
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch monthly earnings.');
+  }
+}
+
+export async function monthlyAwarded(){
+  try{
+    const monthlyAwarded = await sql`
+    SELECT 
+    EXTRACT(MONTH FROM date) as month,
+    SUM(amount_paid)/100 as awarded
+    FROM referralData
+    WHERE EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM NOW())
+    GROUP BY EXTRACT(MONTH FROM date)
+    ORDER BY EXTRACT(MONTH FROM date)
+    `;
+
+    return monthlyAwarded.rows;
+  }
+  catch(error){
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch monthly awarded.');
+  }
+}
