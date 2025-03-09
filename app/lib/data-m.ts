@@ -15,6 +15,7 @@ export async function fetchUsers( ) {
 }
 
 
+
 async function getuserID(){
   const user = await currentUser();
   if (user) {
@@ -71,6 +72,31 @@ export async function fetchFilteredreferrals(
   }
 }
 
+export async function fetchfiltredcustomers(query:string , currentPage:number){
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  try {
+    const customers = await sql<user>`
+      SELECT
+        user.id,
+        user.name,
+        user.email,
+        user.auth
+      FROM user
+      WHERE
+        user.name ILIKE ${`%${query}%`} OR
+        user.email ILIKE ${`%${query}%`} OR
+        user.auth ILIKE ${`%${query}%`}
+      ORDER BY user.name
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return customers.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customers.');
+  }
+}
+
 // filter by userID from clerk 
 export async function fetchFilteredreferralsMembers(
   query: string,
@@ -112,6 +138,7 @@ export async function fetchFilteredreferralsMembers(
 }
 
 
+
 export async function fetchreferralsPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)
@@ -129,6 +156,24 @@ export async function fetchreferralsPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch referrals pages.');
+  }
+}
+
+export async function fetchcustomersPages(query: string) {
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM referralData
+    WHERE
+      name ILIKE ${`%${query}%`} OR
+      Amount::text ILIKE ${`%${query}%`}
+
+
+  `;
+
+    return Math.ceil(count.rows[0].count / ITEMS_PER_PAGE);
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customers pages.');
   }
 }
 
@@ -154,6 +199,8 @@ export async function fetchreferralsPagesMembers(query: string) {
     throw new Error('Failed to fetch referrals pages.');
   }
 }
+
+
 
 export async function fetchreferralById(id: string) {
   try {
@@ -262,15 +309,15 @@ export async function fetchAmountAwardedLast30Days() {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch amount awarded in the last 30 days.');
   }
-}
+} 
 
 
 export async function monthlyEarnings(){
   try{
     const monthlyEarnings = await sql`
     SELECT 
-    EXTRACT(MONTH FROM date) as month,
-    SUM(amount)/100 as earnings
+      EXTRACT(MONTH FROM date) as month,
+      ROUND(SUM(amount)::numeric / 100.0, 2) as earnings
     FROM referralData
     WHERE EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM NOW())
     GROUP BY EXTRACT(MONTH FROM date)
