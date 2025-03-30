@@ -8,7 +8,8 @@ export default async function Table({
   query: string;
   currentPage: number;
 }) {
-  const referrals = await fetchTotalAmountAwarded();
+  // Pass query and currentPage to fetch filtered and paginated results
+  const referrals = await fetchTotalAmountAwarded(query, currentPage);
 
   console.log(referrals);
 

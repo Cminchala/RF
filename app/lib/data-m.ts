@@ -278,15 +278,18 @@ export async function fetchUserAmountPaid() {
   }
 }
 
-// Fetch total amount awarded grouped by name
-export async function fetchTotalAmountAwarded() {
+// Updated to accept query and currentPage for filtering and pagination
+export async function fetchTotalAmountAwarded(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const totalAmountAwarded = await sql`
       SELECT name, SUM(amount_paid) as amount_awarded
       FROM referralData
+      WHERE name ILIKE ${`%${query}%`}
       GROUP BY name
+      ORDER BY name
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
-
     return totalAmountAwarded.rows;
   } catch (error) {
     console.error('Database Error:', error);
