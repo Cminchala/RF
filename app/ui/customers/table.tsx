@@ -1,5 +1,5 @@
 import { formatCurrency } from '@/app/lib/utils';
-import { fetchTotalAmountAwarded } from '@/app/lib/data-m';
+import { fetchCombinedAmountAwarded } from '@/app/lib/data-m';
 
 export default async function Table({
   query,
@@ -7,9 +7,10 @@ export default async function Table({
 }: {
   query: string;
   currentPage: number;
+
 }) {
   // Pass query and currentPage to fetch filtered and paginated results
-  const referrals = await fetchTotalAmountAwarded(query, currentPage);
+  const referrals = await fetchCombinedAmountAwarded(query, currentPage);
 
   console.log(referrals);
 
@@ -34,7 +35,7 @@ export default async function Table({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      Amount awarded in 30 Days: {formatCurrency(Number(referral.amount_awarded))}
+                      Amount awarded in 30 Days: {formatCurrency(Number(referral.monthbyawarded))}
                     </p>
                   </div>
                   <div className="flex justify-end gap-2">

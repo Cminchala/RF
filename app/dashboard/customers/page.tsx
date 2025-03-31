@@ -4,7 +4,7 @@ import Table from '@/app/ui/customers/table';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
- import { fetchreferralsPages } from '@/app/lib/data-m';
+ import { fetchcustomersPages } from '@/app/lib/data-m';
 export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
@@ -14,7 +14,9 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchreferralsPages(query);
+  const totalPages = await fetchcustomersPages(query);
+  console.log(totalPages)
+  
  
   return (
     <div className="w-full">

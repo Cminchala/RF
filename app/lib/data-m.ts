@@ -161,15 +161,11 @@ export async function fetchreferralsPages(query: string) {
 
 export async function fetchcustomersPages(query: string) {
   try {
-    const count = await sql`SELECT COUNT(*)
-    FROM referralData
-    WHERE
-      name ILIKE ${`%${query}%`} OR
-      Amount::text ILIKE ${`%${query}%`}
-
-
-  `;
-
+    const count = await sql`
+      SELECT COUNT(DISTINCT name)
+      FROM referralData      
+    `;
+   //  console.log('NUM of customers: ',Math.ceil(count.rows[0].count))
     return Math.ceil(count.rows[0].count / ITEMS_PER_PAGE);
   } catch (error) {
     console.error('Database Error:', error);
@@ -279,40 +275,26 @@ export async function fetchUserAmountPaid() {
 }
 
 // Updated to accept query and currentPage for filtering and pagination
-export async function fetchTotalAmountAwarded(query: string, currentPage: number) {
+export async function fetchCombinedAmountAwarded(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
-    const totalAmountAwarded = await sql`
-      SELECT name, SUM(amount_paid) as amount_awarded
+    const combined = await sql`
+      SELECT 
+        name,
+        SUM(amount_paid) AS amount_awarded,
+        SUM(CASE WHEN date >= NOW() - INTERVAL '30 days' THEN amount_paid ELSE 0 END) AS monthbyawarded
       FROM referralData
-      WHERE name ILIKE ${`%${query}%`}
+      WHERE name ILIKE ${`%${query}%`} AND status ILIKE 'pending'
       GROUP BY name
       ORDER BY name
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
-    return totalAmountAwarded.rows;
+    return combined.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch total amount awarded.');
+    throw new Error('Failed to fetch total and last 30 days awarded amount.');
   }
 }
-
-// Fetch total amount awarded in the last 30 days grouped by name
-export async function fetchAmountAwardedLast30Days() {
-  try {
-    const amountAwardedLast30Days = await sql`
-      SELECT name, SUM(amount_paid) AS amount_awarded
-      FROM referralData
-      WHERE date >= NOW() - INTERVAL '30 days'
-      GROUP BY name
-    `;
-
-    return amountAwardedLast30Days.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch amount awarded in the last 30 days.');
-  }
-} 
 
 
 export async function monthlyEarnings(){
